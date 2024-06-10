@@ -10,6 +10,7 @@
 
 #include <grpcpp/security/credentials.h>
 #include <grpcpp/security/server_credentials.h>
+#include <grpcpp/support/server_interceptor.h>
 
 #include <aos/common/crypto.hpp>
 #include <aos/common/cryptoutils.hpp>
@@ -53,6 +54,15 @@ std::shared_ptr<grpc::ServerCredentials> GetTLSServerCredentials(const aos::iam:
 std::shared_ptr<grpc::ChannelCredentials> GetTLSChannelCredentials(const aos::iam::certhandler::CertInfo& certInfo,
     const aos::String& rootCertPath, aos::cryptoutils::CertLoaderItf& certLoader,
     aos::crypto::x509::ProviderItf& cryptoProvider);
+
+/**
+ * Creates URL server interceptor factory.
+ *
+ * @param serverURL server URL.
+ * @return std::unique_ptr<grpc::experimental::ServerInterceptorFactoryInterface>
+ */
+std::unique_ptr<grpc::experimental::ServerInterceptorFactoryInterface> CreateServerURLInterceptorFactory(
+    const std::string& serverURL);
 
 } // namespace aos::common::utils
 

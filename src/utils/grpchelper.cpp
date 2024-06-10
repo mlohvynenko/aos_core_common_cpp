@@ -134,6 +134,49 @@ static std::shared_ptr<grpc::experimental::CertificateProviderInterface> GetTLSC
     return std::make_shared<grpc::experimental::StaticDataCertificateProvider>("", keyCertPairs);
 }
 
+namespace {
+class URLInterceptor : public grpc::experimental::Interceptor {
+public:
+    explicit URLInterceptor(const std::string& url)
+        : mURL(url)
+    {
+    }
+
+    void Intercept(grpc::experimental::InterceptorBatchMethods* methods) override
+    {
+        if (methods->QueryInterceptionHookPoint(
+                grpc::experimental::InterceptionHookPoints::POST_RECV_INITIAL_METADATA)) {
+
+            methods->GetRecvInitialMetadata()->insert({"server-url", mURL});
+        }
+
+        methods->Proceed();
+    }
+
+private:
+    std::string mURL;
+};
+
+class URLInterceptorFactory : public grpc::experimental::ServerInterceptorFactoryInterface {
+public:
+    explicit URLInterceptorFactory(const std::string& url)
+        : mURL(url)
+    {
+    }
+
+    grpc::experimental::Interceptor* CreateServerInterceptor(grpc::experimental::ServerRpcInfo* info) override
+    {
+        (void)info;
+
+        return new URLInterceptor(mURL);
+    }
+
+private:
+    std::string mURL;
+};
+
+} // namespace
+
 /***********************************************************************************************************************
  * Public interface
  **********************************************************************************************************************/
@@ -189,6 +232,12 @@ std::shared_ptr<grpc::ChannelCredentials> GetTLSChannelCredentials(const aos::ia
     options.set_identity_cert_name("identity");
 
     return grpc::experimental::TlsCredentials(options);
+}
+
+std::unique_ptr<grpc::experimental::ServerInterceptorFactoryInterface> CreateServerURLInterceptorFactory(
+    const std::string& serverURL)
+{
+    return std::make_unique<URLInterceptorFactory>(serverURL);
 }
 
 } // namespace aos::common::utils
