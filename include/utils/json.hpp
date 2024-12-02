@@ -191,6 +191,14 @@ std::vector<T> GetArrayValue(const CaseInsensitiveObjectWrapper& object, const s
     return GetArrayValue<T>(object, key, [](const Poco::Dynamic::Var& value) { return value.convert<T>(); });
 }
 
+/**
+ * Stringifies json.
+ *
+ * @param json json object.
+ * @return std::string.
+ */
+std::string Stringify(const Poco::Dynamic::Var& json);
+
 } // namespace aos::common::utils
 
 #endif

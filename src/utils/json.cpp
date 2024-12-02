@@ -6,6 +6,7 @@
  */
 
 #include <fstream>
+#include <sstream>
 
 #include "utils/json.hpp"
 
@@ -133,6 +134,15 @@ Poco::Dynamic::Var FindByPath(const Poco::Dynamic::Var object, const std::vector
     }
 
     return result;
+}
+
+std::string Stringify(const Poco::Dynamic::Var& json)
+{
+    std::ostringstream oss;
+
+    Poco::JSON::Stringifier::stringify(json, oss);
+
+    return oss.str();
 }
 
 } // namespace aos::common::utils

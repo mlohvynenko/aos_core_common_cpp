@@ -253,4 +253,21 @@ TEST_F(JsonTest, WriteJsonToFileFails)
     EXPECT_EQ(WriteJsonToFile(object, path), aos::ErrorEnum::eFailed);
 }
 
+TEST_F(JsonTest, Stringify)
+{
+    Poco::JSON::Object::Ptr object = new Poco::JSON::Object();
+    object->set("key", "value");
+
+    std::string stringified = Stringify(object);
+
+    aos::Error         err;
+    Poco::Dynamic::Var result;
+
+    ASSERT_NO_THROW(aos::Tie(result, err) = ParseJson(stringified));
+    ASSERT_EQ(result.type(), typeid(Poco::JSON::Object::Ptr));
+
+    ASSERT_TRUE(object->has("key"));
+    EXPECT_EQ(object->get("key").convert<std::string>(), "value");
+}
+
 } // namespace aos::common::utils
