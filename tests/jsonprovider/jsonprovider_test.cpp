@@ -162,11 +162,11 @@ AlertRules CreateAlerts()
     AlertRules alerts;
 
     alerts.mRAM.SetValue(AlertRulePercents {aos::Time::cSeconds, 0.1, 0.2});
-    alerts.mCPU.SetValue(AlertRulePercents {2 * aos::Time::cSeconds, 0.3, 0.4});
-    alerts.mPartitions.EmplaceBack(PartitionAlertRule {3 * aos::Time::cSeconds, 0.5, 0.6, "partition1"});
-    alerts.mPartitions.EmplaceBack(PartitionAlertRule {4 * aos::Time::cSeconds, 0.6, 0.7, "partition2"});
-    alerts.mDownload.SetValue(AlertRulePoints {5 * aos::Time::cSeconds, 100, 200});
-    alerts.mUpload.SetValue(AlertRulePoints {6 * aos::Time::cSeconds, 300, 400});
+    alerts.mCPU.SetValue(AlertRulePercents {aos::Time::cSeconds * 2, 0.3, 0.4});
+    alerts.mPartitions.EmplaceBack(PartitionAlertRule {aos::Time::cSeconds * 3, 0.5, 0.6, "partition1"});
+    alerts.mPartitions.EmplaceBack(PartitionAlertRule {aos::Time::cSeconds * 4, 0.6, 0.7, "partition2"});
+    alerts.mDownload.SetValue(AlertRulePoints {aos::Time::cSeconds * 5, 100, 200});
+    alerts.mUpload.SetValue(AlertRulePoints {aos::Time::cSeconds * 6, 300, 400});
 
     return alerts;
 }
